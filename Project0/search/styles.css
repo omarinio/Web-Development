@@ -3,3 +3,37 @@
     top:0;
     right:0;
    }
+
+.form-rounded {
+    border-radius: 1rem;
+   }
+
+.center {
+    display: flex;
+    width: 550px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.logo {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -130%);
+    transform: translate(-50%, -130%);
+}
+
+.sub {
+    display: flex;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-110%, 70%);
+    transform: translate(-110%, 70%);
+}
