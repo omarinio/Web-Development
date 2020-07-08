@@ -43,6 +43,16 @@
     transform: translate(-110%, 70%);
 }
 
+.sub2 {
+    display: flex;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(0%, 70%);
+    transform: translate(0%, 70%);
+}
+
 .imgsub {
     -ms-transform: translate(-50%, 70%);
     transform: translate(-50%, 70%);
