@@ -47,4 +47,27 @@
     -ms-transform: translate(-50%, 70%);
     transform: translate(-50%, 70%);
 }
+
+.all {
+    display: inline-block;
+    font-size: 13px;
+    padding-left: 50px;
+    width: 200px;
+}
+
+.textdiv {
+    display: inline-block;
+    padding-left: 50px;
+}
+
+.textbox {
+    width: 500px;
+    border: 1px solid #d3d3d3;
+    height: 25px;
+    font-size: 13px;
+}
+
+.btndiv{
+    padding-left: 630px;
+    padding-top: 20px;
 }

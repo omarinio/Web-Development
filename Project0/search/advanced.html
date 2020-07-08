@@ -6,9 +6,56 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <h1>Advanced</h1>
+        <dix>
+            <h5 style="color:red; padding-top:70px; padding-left:50px">Advanced Search</h5>
+        </dix>
+        <div>
+            <p style="padding-left:50px; padding-top:70px">Find pages with...</p>
+        </div>
         <div class="topcorner">
             <a href="index.html">Google Search</a>
         </div>
+        <form action="https://google.com/search">
+            <div>
+                <div>
+                    <div class="all">
+                        <p>all these words:</p>
+                    </div>
+                    <div class="textdiv">
+                        <input type="text" name="as_q" class="textbox">
+                    </div>
+                </div>
+                <div>
+                    <div class="all">
+                        <p>this exact word or phrase:</p>
+                    </div>
+                    <div class="textdiv">
+                        <input type="text" name="as_epq" class="textbox">
+                    </div>
+                </div>
+                <div>
+                    <div class="all">
+                        <p>any of these words:</p>
+                    </div>
+                    <div class="textdiv">
+                        <input type="text" name="as_oq" class="textbox">
+                    </div>
+                </div>
+                <div>
+                    <div class="all">
+                        <p>none of these words:</p>
+                    </div>
+                    <div class="textdiv">
+                        <input type="text" name="as_eq" class="textbox">
+                    </div>
+                </div>
+
+                <div class="btndiv">
+                    <input type="submit" value="Advanced Search" class="btn btn-primary btn-sm">
+                </div>
+                
+            </div>
+            
+        </form>
     </body>
 </html>
