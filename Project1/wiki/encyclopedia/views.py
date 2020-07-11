@@ -31,7 +31,9 @@ def title(request, title):
         })
 
     else:
-        return render(request, "encyclopedia/error.html")
+        return render(request, "encyclopedia/error.html", {
+            "form": SearchForm()
+        })
 
 # search method, either displays correct page or potential search results
 def search(request, query):
@@ -54,7 +56,14 @@ def search(request, query):
                 }))
         
             else:
-                return HttpResponse("ELSE")
+                substrings = [s for s in util.list_entries() if query in s.lower()]
+
+                return render(request, "encyclopedia/search.html", {
+                    "entries": substrings,
+                    "form": SearchForm()
+                })
 
     else:
-        return HttpResponse("ERROR")
+        return render(request, "encyclopedia/error.html", {
+            "form": SearchForm()
+        })
