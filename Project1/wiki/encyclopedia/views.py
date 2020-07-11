@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django import forms
+from random import choice
 
 from . import util
 
@@ -67,3 +68,8 @@ def search(request, query):
         return render(request, "encyclopedia/error.html", {
             "form": SearchForm()
         })
+
+def random(request):
+    return redirect(reverse("encyclopedia:title", kwargs={
+        "title": choice(util.list_entries())
+    }))
