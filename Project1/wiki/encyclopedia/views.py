@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django import forms
 from random import choice
+import markdown2
 
 from . import util
 
@@ -23,10 +24,12 @@ def title(request, title):
     # gets the entry 
     entry = util.get_entry(title)
 
+    mdentry = markdown2.markdown(entry)
+
     # returns the corresponding page if entry exists, otherwise shows generic error page
     if entry:
         return render(request, "encyclopedia/title.html", {
-            "entry": util.get_entry(title),
+            "entry": mdentry,
             "title": title,
             "form": SearchForm()
         })
