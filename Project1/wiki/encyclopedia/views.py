@@ -12,6 +12,10 @@ from . import util
 class SearchForm(forms.Form):
     q = forms.CharField(label='', widget=forms.TextInput(attrs={'placeholder': 'Search encyclopedia'}))
 
+class CreateForm(forms.Form):
+    title = forms.CharField(label='Title', widget=forms.TextInput(attrs={'placeholder': 'Title'}))
+    textarea = forms.CharField(label='', widget=forms.Textarea(attrs={'placeholder': 'Markdown Contents', 'style': 'height:500px'}))
+
 # returns the index website request
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -76,3 +80,27 @@ def random(request):
     return redirect(reverse("encyclopedia:title", kwargs={
         "title": choice(util.list_entries())
     }))
+
+def create(request):
+    if request.method == "POST":
+        form = CreateForm(request.POST)
+
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            textarea = form.cleaned_data["textarea"]
+
+            util.save_entry(title, textarea)
+
+            return redirect(reverse("encyclopedia:title", kwargs={
+                "title": title
+            }))
+
+        else:
+            return render(request, "encyclopedia/error.html", {
+            "form": SearchForm()
+        })
+
+    return render(request, "encyclopedia/create.html", {
+        "createform": CreateForm(),
+        "form": SearchForm()
+    })
