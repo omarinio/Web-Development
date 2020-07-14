@@ -8,4 +8,8 @@
 
     {{ entry|safe }}
 
+    <form action="{% url 'encyclopedia:edit' title %}">
+        <input type="submit" value="Edit" class="btn btn-info">
+    </form>
+
 {% endblock %}

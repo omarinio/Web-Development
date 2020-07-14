@@ -115,5 +115,43 @@ def create(request):
         "form": SearchForm()
     })
 
-# def edit(request):
+def edit(request, title):
+    if request.method == "POST":
+        form = CreateForm(request.POST)
+
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+
+            textarea = form.cleaned_data["textarea"]
+
+            util.save_entry(title, textarea)
+
+            return redirect(reverse("encyclopedia:title", kwargs={
+                "title": title
+            }))
+
+        else:
+            return render(request, "encyclopedia/error.html", {
+            "form": SearchForm(),
+            "error": "Form is invalid, please try again."
+        })
+
+    textarea = util.get_entry(title)
+
+    if textarea:
+        return render(request, "encyclopedia/edit.html", {
+            "createform": CreateForm(initial={
+                "title": title,
+                "textarea": textarea
+            }),
+            "form": SearchForm(),
+            "title": title
+        })
+    
+    else:
+        return render(request, "encyclopedia/error.html", {
+            "form": SearchForm(),
+            "error": "Error 404, page not found..."
+        })
+        
 
