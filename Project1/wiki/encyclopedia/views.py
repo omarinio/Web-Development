@@ -28,10 +28,9 @@ def title(request, title):
     # gets the entry 
     entry = util.get_entry(title)
 
-    mdentry = markdown2.markdown(entry)
-
     # returns the corresponding page if entry exists, otherwise shows generic error page
     if entry:
+        mdentry = markdown2.markdown(entry)
         return render(request, "encyclopedia/title.html", {
             "entry": mdentry,
             "title": title,
@@ -40,7 +39,8 @@ def title(request, title):
 
     else:
         return render(request, "encyclopedia/error.html", {
-            "form": SearchForm()
+            "form": SearchForm(),
+            "error": "Error 404, page not found..."
         })
 
 # search method, either displays correct page or potential search results
@@ -73,7 +73,8 @@ def search(request, query):
 
     else:
         return render(request, "encyclopedia/error.html", {
-            "form": SearchForm()
+            "form": SearchForm(),
+            "error": "POST method failure"
         })
 
 def random(request):
@@ -87,6 +88,14 @@ def create(request):
 
         if form.is_valid():
             title = form.cleaned_data["title"]
+            lowercase_data = [e.lower() for e in util.list_entries()]
+
+            if title.lower() in lowercase_data:
+                return render(request, "encyclopedia/error.html", {
+                    "form": SearchForm(),
+                    "error": "Page with this name already exists."
+                })
+
             textarea = form.cleaned_data["textarea"]
 
             util.save_entry(title, textarea)
@@ -97,10 +106,14 @@ def create(request):
 
         else:
             return render(request, "encyclopedia/error.html", {
-            "form": SearchForm()
+            "form": SearchForm(),
+            "error": "Form is invalid, please try again."
         })
 
     return render(request, "encyclopedia/create.html", {
         "createform": CreateForm(),
         "form": SearchForm()
     })
+
+# def edit(request):
+
