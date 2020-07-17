@@ -19,6 +19,7 @@ class AuctionListing(models.Model):
         Electronics = 'Electronics'
         Home = 'Home'
         Sports = 'Sporting Goods'
+        Vehicles = 'Vehicles'
 
     categories = models.CharField(max_length=16, choices=Category.choices, blank = True)
 
