@@ -10,7 +10,7 @@ class AuctionListing(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=512)
     starting_bid = models.IntegerField()
-    image = models.ImageField(blank = True)
+    image = models.URLField()
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ListingSeller")
     
     class Category(models.TextChoices):
@@ -20,7 +20,7 @@ class AuctionListing(models.Model):
         Home = 'Home'
         Sports = 'Sporting Goods'
 
-    categories = models.CharField(choices=Category.choices, blank = True)
+    categories = models.CharField(max_length=16, choices=Category.choices, blank = True)
 
     def __str__(self):
         return f"{self.name} {self.description} {self.starting_bid} Seller: {self.seller}"
@@ -42,4 +42,4 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.user} {self.item} {self.comment}"
 
-        
+
