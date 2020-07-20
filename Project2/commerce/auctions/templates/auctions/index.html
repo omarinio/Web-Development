@@ -7,7 +7,7 @@
         <div class="falo">
                 <p><a href="{% url 'listing' listing.id %}"><h4>{{ listing.name }}</h4></a></p>
                 <p>{{ listing.description }}</p>
-                <p>${{ listing.starting_bid }}</p>
+                <p>Starting Bid: ${{ listing.starting_bid }}</p>
                 {% if listing.image %}
                     <img src="{{ listing.image }}" alt="{{ listing.name }}" width=300px height=300px>
                 {% else %}

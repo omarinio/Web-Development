@@ -67,6 +67,14 @@ def register(request):
 def listing(request, id):
     listing = AuctionListing.objects.get(id=id)
 
+    bids = Bid.objects.filter(item=listing)
+    max_bid = listing.starting_bid
+
+    for bid in bids:
+        if bid.bid_amount > max_bid:
+            max_bid = bid.bid_amount
+
     return render(request, "auctions/listing.html", {
-                "listing": listing
+                "listing": listing,
+                "max_bid": max_bid
             })

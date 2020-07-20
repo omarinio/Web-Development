@@ -5,7 +5,8 @@
     <div class="falo">
         <p><h4>{{ listing.name }}</h4></p>
         <p>{{ listing.description }}</p>
-        <p>${{ listing.starting_bid }}</p>
+        <p><b>Starting Bid:</b> ${{ listing.starting_bid }}</p>
+        <p><b>Highest Bid:</b> ${{ max_bid }}</p>
         {% if listing.image %}
             <img src="{{ listing.image }}" alt="{{ listing.name }}" width=300px height=300px>
         {% else %}
