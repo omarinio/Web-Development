@@ -122,7 +122,17 @@ def create_listing(request):
         new_listing = ListingForm(request.POST)
 
         if new_listing.is_valid():
-            pass
+            new_listing_title = new_listing.cleaned_data["listing_title"]
+            new_listing_description = new_listing.cleaned_data["listing_description"]
+            new_starting_bid = new_listing.cleaned_data["starting_bid"]
+            new_listing_image = new_listing.cleaned_data["listing_image"]
+            new_category = request.POST["category"]
+
+            new_listing_object = AuctionListing(name = new_listing_title, description = new_listing_description, starting_bid = new_starting_bid,
+                                    image = new_listing_image, seller = request.user, categories = new_category)
+            new_listing_object.save()
+
+            return HttpResponseRedirect(reverse("index"))
     
     categories = ['Fashion', 'Toys', 'Electronics', 'Home', 'Sporting Goods', 'Vehicles']
 
