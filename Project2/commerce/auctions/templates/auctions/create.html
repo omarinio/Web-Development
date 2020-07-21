@@ -7,6 +7,7 @@
         {% csrf_token %}
         {{ listing_form.as_p }}
         <p><select name="category">
+            <option selected value='{{ category }}'> </option>
             {% for category in categories %}
                 <option value="{{ category }}">
                     {{ category }}

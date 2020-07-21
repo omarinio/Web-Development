@@ -14,7 +14,7 @@ class ListingForm(forms.Form):
     listing_title = forms.CharField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Listing name'}))
     listing_description = forms.CharField(label = "", widget=forms.Textarea(attrs={'placeholder': 'Listing description (512 chars max)', 'style': 'width: 500px'}))
     starting_bid = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Starting bid', 'style': 'width:300px'}))
-    listing_image = forms.URLField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Image URL'}))
+    listing_image = forms.URLField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Image URL'}), required=False)
 
 # class ListingForm(forms.Form):
 #     listing_forms = modelform_factory(AuctionListing, exclude=['seller'])
