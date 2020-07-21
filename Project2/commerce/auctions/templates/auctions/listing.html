@@ -8,19 +8,40 @@
 
     <div class="falo">
         <p><h4>{{ listing.name }}</h4></p>
-        <p>{{ listing.description }}</p>
-        <p><b>Current Bid:</b> ${{ max_bid }}</p>
         {% if listing.image %}
             <img src="{{ listing.image }}" alt="{{ listing.name }}" width=300px height=300px>
         {% else %}
             No image given.
         {% endif %}
+        <p>{{ listing.description }}</p>
+        <p><b>Current Bid:</b> ${{ max_bid }}</p>
 
         <form action="{% url 'bid' listing.id %}" method="post">
             {% csrf_token %}
-            {{ bid_form }}
-            <input type="submit">
+            <p style="padding-top: 5px;">{{ bid_form }}</p>
+            <p><button type="submit" class="btn btn-primary btn-sm">Place Bid</button></p>
         </form>
+
+        <h5>Submit a comment:</h5>
+
+        <form action="{% url 'comment' listing.id %}" method="post">
+            {% csrf_token %}
+            <p style="padding-top: 5px;">{{ comment_form }}</p>
+            <p><button type="submit" class="btn btn-primary btn-sm">Post Comment</button></p>
+        </form>
+
+        <h6>Comments</h6>
+        <hr>
+
+        {% if comments %}
+            {% for comment in comments %}
+                <p>{{ comment.comment }}</p>
+                <p><b>User:</b> {{ comment.user }}</p>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>Comments are empty</p>
+        {% endif %}
 
         {% if can_delete %}
 

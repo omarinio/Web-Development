@@ -8,8 +8,12 @@ from django.contrib.auth.decorators import login_required
 
 from .models import User, AuctionListing, Bid, Comment
 
+
 class BidForm(forms.Form):
-    new_bid_amount = forms.IntegerField(label='Bid Amount')
+    new_bid_amount = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Bid', 'style': 'width:300px'}))
+
+class CommentForm(forms.Form):
+    comment_content = forms.CharField(label = "", widget=forms.Textarea(attrs={'placeholder': 'Post a comment (256 chars max)', 'style': 'width: 500px'}))
 
 def index(request):
     return render(request, "auctions/index.html", {
@@ -89,12 +93,16 @@ def listing(request, id):
     if current_user == listing.seller:
         can_delete = True
 
+    comments = Comment.objects.filter(item=listing)
+
     return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "max_bid": max_bid,
                 "can_delete": can_delete,
                 "message": "",
-                "bid_form": BidForm()
+                "bid_form": BidForm(),
+                "comment_form": CommentForm(),
+                "comments": comments
             })
 
 @login_required
@@ -113,11 +121,43 @@ def bid(request, id):
             for bid in bids:
                 if bid.bid_amount > max_bid:
                     max_bid = bid.bid_amount
+
+            comments = Comment.objects.filter(item=listing)
                         
             if new_bid_amount > max_bid:
-                created_bid = Bid(user=current_user, item=listing, bid_amount=new_bid_amount)
+                created_bid = Bid(user = current_user, item = listing, bid_amount = new_bid_amount)
                 created_bid.save()
 
-                return HttpResponseRedirect(reverse("listing", args=(id,)))
+                # return HttpResponseRedirect(reverse("listing", args=(id,)))
+                return render(request, "auctions/listing.html", {
+                    "listing": listing,
+                    "max_bid": new_bid_amount,
+                    "message": "Bid was successful!",
+                    "bid_form": BidForm(),
+                    "comment_form": CommentForm(),
+                    "comments": comments
+                })
             else:
-                return HttpResponseRedirect(reverse("listing", args=(id,)))
+                # return HttpResponseRedirect(reverse("listing", args=(id,)))
+                return render(request, "auctions/listing.html", {
+                    "listing": listing,
+                    "max_bid": max_bid,
+                    "message": f"Your bid amount was lower than the highest bid offer of ${max_bid}",
+                    "bid_form": BidForm(),
+                    "comment_form": CommentForm(),
+                    "comments": comments
+                })
+
+@login_required
+def add_comment(request, id):
+    if request.method == "POST":
+        comment = CommentForm(request.POST)
+
+        if comment.is_valid():
+            new_comment = comment.cleaned_data["comment_content"]
+            listing = AuctionListing.objects.get(id=id)
+
+            new_comment_object = Comment(user = request.user, item = listing, comment = new_comment)
+            new_comment_object.save()
+
+            return HttpResponseRedirect(reverse("listing", args=(id,)))
