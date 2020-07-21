@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     def __str__(self):
-        return f"{self.username} {self.email}"
+        return f"{self.username}"
 
 class AuctionListing(models.Model):
     name = models.CharField(max_length=64)

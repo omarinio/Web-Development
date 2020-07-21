@@ -14,6 +14,7 @@
             No image given.
         {% endif %}
         <p>{{ listing.description }}</p>
+        <p><b>Listing by: </b>{{ listing.seller }}</p>
         <p><b>Current Bid:</b> ${{ max_bid }}</p>
 
         <form action="{% url 'bid' listing.id %}" method="post">
