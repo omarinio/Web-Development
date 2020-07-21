@@ -22,6 +22,7 @@ class AuctionListing(models.Model):
         Vehicles = 'Vehicles'
 
     categories = models.CharField(max_length=16, choices=Category.choices, blank = True)
+    # categories = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name="Categories")
 
     def __str__(self):
         return f"{self.name} {self.description} {self.starting_bid} Seller: {self.seller}"

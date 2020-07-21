@@ -5,15 +5,26 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.forms import modelform_factory
 
 from .models import User, AuctionListing, Bid, Comment
 
+
+class ListingForm(forms.Form):
+    listing_title = forms.CharField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Listing name'}))
+    listing_description = forms.CharField(label = "", widget=forms.Textarea(attrs={'placeholder': 'Listing description (512 chars max)', 'style': 'width: 500px'}))
+    starting_bid = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Starting bid', 'style': 'width:300px'}))
+    listing_image = forms.URLField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Image URL'}))
+
+# class ListingForm(forms.Form):
+#     listing_forms = modelform_factory(AuctionListing, exclude=['seller'])
 
 class BidForm(forms.Form):
     new_bid_amount = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Bid', 'style': 'width:300px'}))
 
 class CommentForm(forms.Form):
     comment_content = forms.CharField(label = "", widget=forms.Textarea(attrs={'placeholder': 'Post a comment (256 chars max)', 'style': 'width: 500px'}))
+
 
 def index(request):
     return render(request, "auctions/index.html", {
@@ -104,6 +115,21 @@ def listing(request, id):
                 "comment_form": CommentForm(),
                 "comments": comments
             })
+
+@login_required
+def create_listing(request):
+    if request.method == "POST":
+        new_listing = ListingForm(request.POST)
+
+        if new_listing.is_valid():
+            pass
+    
+    categories = ['Fashion', 'Toys', 'Electronics', 'Home', 'Sporting Goods', 'Vehicles']
+
+    return render(request, "auctions/create.html", {
+        "listing_form": ListingForm(),
+        "categories": categories
+    })
 
 @login_required
 def bid(request, id):
