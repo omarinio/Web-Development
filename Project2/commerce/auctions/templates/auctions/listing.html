@@ -9,7 +9,7 @@
     <div class="falo">
         <p><h4>{{ listing.name }}</h4></p>
         {% if listing.image %}
-            <img src="{{ listing.image }}" alt="{{ listing.name }}" width=300px height=300px>
+            <img src="{{ listing.image }}" alt="{{ listing.name }}" style="max-width:500px; max-height:500px">
         {% else %}
             No image given.
         {% endif %}
