@@ -16,9 +16,6 @@ class ListingForm(forms.Form):
     starting_bid = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Starting bid', 'style': 'width:300px'}))
     listing_image = forms.URLField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Image URL'}), required=False)
 
-# class ListingForm(forms.Form):
-#     listing_forms = modelform_factory(AuctionListing, exclude=['seller'])
-
 class BidForm(forms.Form):
     new_bid_amount = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Bid', 'style': 'width:300px'}))
 
@@ -115,6 +112,16 @@ def listing(request, id):
                 "comment_form": CommentForm(),
                 "comments": comments
             })
+
+def categories(request):
+    categories = ['Fashion', 'Toys', 'Electronics', 'Home', 'Sporting Goods', 'Vehicles']
+
+    return render(request, "auctions/categories.html", {
+        "categories": categories
+    })
+
+def category_view(request):
+    pass
 
 @login_required
 def create_listing(request):
