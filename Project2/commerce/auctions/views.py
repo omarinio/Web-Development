@@ -80,6 +80,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 def listing(request, id):
     # gets the listing requested by checking id
     listing = AuctionListing.objects.get(id=id)
@@ -113,6 +114,7 @@ def listing(request, id):
                 "comments": comments
             })
 
+
 def categories(request):
     categories = ['Fashion', 'Toys', 'Electronics', 'Home', 'Sporting Goods', 'Vehicles']
 
@@ -120,8 +122,15 @@ def categories(request):
         "categories": categories
     })
 
-def category_view(request):
-    pass
+
+def category_view(request, category):
+    listings = AuctionListing.objects.filter(categories=category)
+
+    return render(request, "auctions/category_view.html", {
+        "category": category,
+        "listings": listings
+    })
+
 
 @login_required
 def create_listing(request):
@@ -147,6 +156,7 @@ def create_listing(request):
         "listing_form": ListingForm(),
         "categories": categories
     })
+
 
 @login_required
 def bid(request, id):
@@ -190,6 +200,7 @@ def bid(request, id):
                     "comment_form": CommentForm(),
                     "comments": comments
                 })
+
 
 @login_required
 def add_comment(request, id):
