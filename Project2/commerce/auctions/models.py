@@ -9,8 +9,8 @@ class User(AbstractUser):
 class AuctionListing(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=512)
-    starting_bid = models.IntegerField()
-    image = models.URLField()
+    starting_bid = models.DecimalField(decimal_places=2, max_digits=8)
+    image = models.URLField(blank = True)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ListingSeller")
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -32,7 +32,7 @@ class AuctionListing(models.Model):
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="Buyer")
     item = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, related_name="Listing")
-    bid_amount = models.IntegerField()
+    bid_amount = models.DecimalField(decimal_places=2, max_digits=8)
 
     def __str__(self):
         return f"{self.user} {self.item} {self.bid_amount}"

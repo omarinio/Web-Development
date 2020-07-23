@@ -13,11 +13,11 @@ from .models import User, AuctionListing, Bid, Comment, Watchlist
 class ListingForm(forms.Form):
     listing_title = forms.CharField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Listing name'}))
     listing_description = forms.CharField(label = "", widget=forms.Textarea(attrs={'placeholder': 'Listing description (512 chars max)', 'style': 'width: 500px'}))
-    starting_bid = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Starting bid', 'style': 'width:300px'}))
+    starting_bid = forms.DecimalField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Starting bid', 'style': 'width:300px'}), decimal_places=2, max_digits=8)
     listing_image = forms.URLField(label = "", widget=forms.TextInput(attrs={'placeholder': 'Image URL'}), required=False)
 
 class BidForm(forms.Form):
-    new_bid_amount = forms.IntegerField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Bid', 'style': 'width:300px'}))
+    new_bid_amount = forms.DecimalField(label = "", widget=forms.NumberInput(attrs={'placeholder': 'Bid', 'style': 'width:300px'}), decimal_places=2, max_digits=8)
 
 class CommentForm(forms.Form):
     comment_content = forms.CharField(label = "", widget=forms.Textarea(attrs={'placeholder': 'Post a comment (256 chars max)', 'style': 'width: 500px'}))
@@ -170,7 +170,7 @@ def bid(request, id):
         new_bid = BidForm(request.POST)
         
         if new_bid.is_valid():
-            new_bid_amount = int(new_bid.cleaned_data["new_bid_amount"])
+            new_bid_amount = float(new_bid.cleaned_data["new_bid_amount"])
             listing = AuctionListing.objects.get(id=id)
             current_user = request.user
 
