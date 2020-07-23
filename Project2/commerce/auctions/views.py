@@ -25,7 +25,7 @@ class CommentForm(forms.Form):
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": AuctionListing.objects.all()
+        "listings": AuctionListing.objects.filter(closed=False)
     })
 
 
@@ -96,11 +96,11 @@ def listing(request, id):
 
     # gets current user
     current_user = request.user
-    can_delete = False
+    can_close = False
 
-    # allows user to delete current listing if they are owner of listing
+    # allows user to close current listing if they are owner of listing
     if current_user == listing.seller:
-        can_delete = True
+        can_close = True
 
     # checks if user has listing in watchlist
     is_watchlisted = False
@@ -112,7 +112,7 @@ def listing(request, id):
     return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "max_bid": max_bid,
-                "can_delete": can_delete,
+                "can_close": can_close,
                 "message": "",
                 "bid_form": BidForm(),
                 "comment_form": CommentForm(),
@@ -247,3 +247,12 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "listings": watchlisted_items
     })
+
+@login_required
+def close_listing(request, id):
+    if request.method == "POST":
+        listing_to_close = AuctionListing.objects.get(id=id)
+        listing_to_close.closed = True
+        listing_to_close.save()
+
+        return HttpResponseRedirect(reverse("listing", args=(id,)))

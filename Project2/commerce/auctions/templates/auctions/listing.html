@@ -5,7 +5,7 @@
     {% if message %}
         <p> {{ message }} </p>
     {% endif %}
-
+    
     {% if is_watchlisted %}
         <form action="{% url 'delete_watchlist' listing.id %}" method="post">
             {% csrf_token %}
@@ -29,11 +29,19 @@
         <p><b>Listing by: </b>{{ listing.seller }}</p>
         <p><b>Current Bid:</b> ${{ max_bid }}</p>
 
-        <form action="{% url 'bid' listing.id %}" method="post">
-            {% csrf_token %}
-            <p style="padding-top: 5px;">{{ bid_form }}</p>
-            <p><button type="submit" class="btn btn-primary btn-sm">Place Bid</button></p>
-        </form>
+        {% if can_close %}
+            <form action="{% url 'close_listing' listing.id %}" method="post">
+                {% csrf_token %}
+                <p><button type="submit" class="btn btn-danger">Close Listing</button></p>
+            </form>
+        {% else %}
+            <form action="{% url 'bid' listing.id %}" method="post">
+                {% csrf_token %}
+                <p style="padding-top: 5px;">{{ bid_form }}</p>
+                <p><button type="submit" class="btn btn-primary btn-sm">Place Bid</button></p>
+            </form>
+        {% endif %}
+        
 
         <h5>Submit a comment:</h5>
 
@@ -57,9 +65,7 @@
             <p>Comments are empty</p>
         {% endif %}
 
-        {% if can_delete %}
-
-        {% endif %}
+        
     </div>
 
 {% endblock %}

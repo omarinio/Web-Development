@@ -3,7 +3,7 @@
 {% block body %}
     <h2>Watchlist</h2>
 
-    {% if listings%}
+    {% if listings %}
         {% for listing in listings %}
             <div class="falo">
                     <p><a href="{% url 'listing' listing.item.id %}"><h4>{{ listing.item.name }}</h4></a></p>

@@ -13,6 +13,7 @@ class AuctionListing(models.Model):
     image = models.URLField(blank = True)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ListingSeller")
     created_at = models.DateTimeField(auto_now_add=True)
+    closed = models.BooleanField(default=False)
     
     class Category(models.TextChoices):
         Fashion = 'Fashion'
