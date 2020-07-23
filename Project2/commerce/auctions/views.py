@@ -195,6 +195,11 @@ def bid(request, id):
             is_watchlisted = False
             if Watchlist.objects.filter(item=listing, user=request.user):
                 is_watchlisted = True
+
+            winner = None
+            if listing.closed:
+                winner_listings = Bid.objects.filter(item=listing)
+                winner = winner_listings.last()
                         
             if new_bid_amount > max_bid:
                 created_bid = Bid(user = current_user, item = listing, bid_amount = new_bid_amount)
@@ -209,7 +214,9 @@ def bid(request, id):
                     "comment_form": CommentForm(),
                     "comments": comments,
                     "is_watchlisted": is_watchlisted,
-                    "is_closed": listing.closed
+                    "is_closed": listing.closed,
+                    "winner": winner,
+                    "user": request.user
                 })
             else:
                 # return HttpResponseRedirect(reverse("listing", args=(id,)))
@@ -221,7 +228,9 @@ def bid(request, id):
                     "comment_form": CommentForm(),
                     "comments": comments,
                     "is_watchlisted": is_watchlisted,
-                    "is_closed": listing.closed
+                    "is_closed": listing.closed,
+                    "winner": winner,
+                    "user": request.user
                 })
 
 
