@@ -6,6 +6,7 @@ from django.urls import reverse
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory
+from django.db.models import Max
 
 from .models import User, AuctionListing, Bid, Comment, Watchlist
 
@@ -109,6 +110,11 @@ def listing(request, id):
 
     comments = Comment.objects.filter(item=listing)
 
+    winner = None
+    if listing.closed:
+        winner_listings = Bid.objects.filter(item=listing)
+        winner = winner_listings.last()
+
     return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "max_bid": max_bid,
@@ -117,7 +123,10 @@ def listing(request, id):
                 "bid_form": BidForm(),
                 "comment_form": CommentForm(),
                 "comments": comments,
-                "is_watchlisted": is_watchlisted
+                "is_watchlisted": is_watchlisted,
+                "is_closed": listing.closed,
+                "winner": winner,
+                "user": request.user
             })
 
 
@@ -182,6 +191,10 @@ def bid(request, id):
                     max_bid = bid.bid_amount
 
             comments = Comment.objects.filter(item=listing)
+
+            is_watchlisted = False
+            if Watchlist.objects.filter(item=listing, user=request.user):
+                is_watchlisted = True
                         
             if new_bid_amount > max_bid:
                 created_bid = Bid(user = current_user, item = listing, bid_amount = new_bid_amount)
@@ -194,7 +207,9 @@ def bid(request, id):
                     "message": "Bid was successful!",
                     "bid_form": BidForm(),
                     "comment_form": CommentForm(),
-                    "comments": comments
+                    "comments": comments,
+                    "is_watchlisted": is_watchlisted,
+                    "is_closed": listing.closed
                 })
             else:
                 # return HttpResponseRedirect(reverse("listing", args=(id,)))
@@ -204,7 +219,9 @@ def bid(request, id):
                     "message": f"Your bid amount was lower than the highest bid offer of ${max_bid}",
                     "bid_form": BidForm(),
                     "comment_form": CommentForm(),
-                    "comments": comments
+                    "comments": comments,
+                    "is_watchlisted": is_watchlisted,
+                    "is_closed": listing.closed
                 })
 
 
@@ -222,6 +239,7 @@ def add_comment(request, id):
 
             return HttpResponseRedirect(reverse("listing", args=(id,)))
 
+
 @login_required
 def add_watchlist(request, id):
     if request.method == "POST":
@@ -230,6 +248,7 @@ def add_watchlist(request, id):
         new_watchlist.save()
 
         return HttpResponseRedirect(reverse("listing", args=(id,)))
+
 
 @login_required
 def delete_watchlist(request, id):
@@ -240,6 +259,7 @@ def delete_watchlist(request, id):
 
         return HttpResponseRedirect(reverse("listing", args=(id,)))
 
+
 @login_required
 def watchlist(request):
     watchlisted_items = Watchlist.objects.filter(user=request.user)
@@ -247,6 +267,7 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "listings": watchlisted_items
     })
+
 
 @login_required
 def close_listing(request, id):

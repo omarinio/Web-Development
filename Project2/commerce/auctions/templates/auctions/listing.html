@@ -29,18 +29,29 @@
         <p><b>Listing by: </b>{{ listing.seller }}</p>
         <p><b>Current Bid:</b> ${{ max_bid }}</p>
 
-        {% if can_close %}
+        {% if is_closed %}
+            {% if can_close %}
+                <p>You have closed this listing. The winner was <b>{{ winner.user }}</b></p>
+            {% elif winner == user %}
+                <p>Congratulations! You have won this listing!</p>
+            {% else %}
+                <p>This listing is now closed, you are unable to bid.</p>
+            {% endif %}
+        {% else %}
+            {% if can_close %}
             <form action="{% url 'close_listing' listing.id %}" method="post">
                 {% csrf_token %}
                 <p><button type="submit" class="btn btn-danger">Close Listing</button></p>
             </form>
-        {% else %}
-            <form action="{% url 'bid' listing.id %}" method="post">
-                {% csrf_token %}
-                <p style="padding-top: 5px;">{{ bid_form }}</p>
-                <p><button type="submit" class="btn btn-primary btn-sm">Place Bid</button></p>
-            </form>
+            {% else %}
+                <form action="{% url 'bid' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <p style="padding-top: 5px;">{{ bid_form }}</p>
+                    <p><button type="submit" class="btn btn-primary btn-sm">Place Bid</button></p>
+                </form>
+            {% endif %}
         {% endif %}
+            
         
 
         <h5>Submit a comment:</h5>
