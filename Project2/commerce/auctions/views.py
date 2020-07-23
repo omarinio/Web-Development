@@ -7,7 +7,7 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory
 
-from .models import User, AuctionListing, Bid, Comment
+from .models import User, AuctionListing, Bid, Comment, Watchlist
 
 
 class ListingForm(forms.Form):
@@ -102,6 +102,11 @@ def listing(request, id):
     if current_user == listing.seller:
         can_delete = True
 
+    # checks if user has listing in watchlist
+    is_watchlisted = False
+    if Watchlist.objects.filter(item=listing, user=request.user):
+        is_watchlisted = True
+
     comments = Comment.objects.filter(item=listing)
 
     return render(request, "auctions/listing.html", {
@@ -111,7 +116,8 @@ def listing(request, id):
                 "message": "",
                 "bid_form": BidForm(),
                 "comment_form": CommentForm(),
-                "comments": comments
+                "comments": comments,
+                "is_watchlisted": is_watchlisted
             })
 
 
@@ -215,3 +221,21 @@ def add_comment(request, id):
             new_comment_object.save()
 
             return HttpResponseRedirect(reverse("listing", args=(id,)))
+
+@login_required
+def add_watchlist(request, id):
+    if request.method == "POST":
+        item_to_watchlist = AuctionListing.objects.get(id=id)
+        new_watchlist = Watchlist(user = request.user, item = item_to_watchlist)
+        new_watchlist.save()
+
+        return HttpResponseRedirect(reverse("listing", args=(id,)))
+
+@login_required
+def delete_watchlist(request, id):
+    if request.method == "POST":
+        item_to_watchlist = AuctionListing.objects.get(id=id)
+        remove_watchlist = Watchlist.objects.filter(user = request.user, item = item_to_watchlist)
+        remove_watchlist.delete()
+
+        return HttpResponseRedirect(reverse("listing", args=(id,)))

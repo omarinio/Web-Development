@@ -6,6 +6,18 @@
         <p> {{ message }} </p>
     {% endif %}
 
+    {% if is_watchlisted %}
+        <form action="{% url 'delete_watchlist' listing.id %}" method="post">
+            {% csrf_token %}
+            <p><button type="submit" class="btn btn-secondary btn-sm">Remove from Watchlist</button></p>
+        </form>
+    {% else %}
+        <form action="{% url 'add_watchlist' listing.id %}" method="post">
+            {% csrf_token %}
+            <p><button type="submit" class="btn btn-secondary btn-sm">Add to Watchlist</button></p>
+        </form>
+    {% endif %}
+
     <div class="falo">
         <p><h4>{{ listing.name }}</h4></p>
         {% if listing.image %}
