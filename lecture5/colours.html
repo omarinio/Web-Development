@@ -8,11 +8,9 @@
 
             document.addEventListener("DOMContentLoaded", function() {
                 
-                document.querySelectorAll("button").forEach(function(button) {
-                    button.onclick = function() {
-                        document.querySelector("#hello").style.color = button.dataset.color;
-                    }
-                });
+                document.querySelector("select").onchange = function() {
+                    document.querySelector("#hello").style.color = this.value;
+                }
 
             });
 
@@ -21,8 +19,11 @@
     </head>
     <body>
         <h1 id="hello">Hello!</h1>
-        <button type="button" class="btn btn-danger" data-color="red">Red</button>
-        <button type="button" class="btn btn-primary" data-color="blue">Blue</button>
-        <button type="button" class="btn btn-success" data-color="green">Green</button>
+        <select>
+            <option value="black">Black</option>
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+        </select>
     </body>
 </html>
