@@ -36,6 +36,37 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  fetch(`emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+      // Print emails
+      console.log(emails);
+
+      for (email in emails) {
+        var email_div = document.createElement('div');
+        email_div.style.border = 'solid black';
+
+        var sender_p = document.createElement('p');
+        var subject_p = document.createElement('p');
+        var timestamp_p = document.createElement('p');
+
+        sender_p.innerHTML = emails[email].sender;
+        subject_p.innerHTML = emails[email].subject;
+        timestamp_p.innerHTML = emails[email].timestamp;
+
+        email_div.appendChild(sender_p);
+        email_div.appendChild(subject_p);
+        email_div.appendChild(timestamp_p);
+
+        if (emails[email].read == true) {
+          email_div.style.backgroundColor = 'grey';
+        }
+
+        document.querySelector("#emails-view").appendChild(email_div);
+        
+      }
+  });
 }
 
 function send_email() {
@@ -56,4 +87,7 @@ function send_email() {
         // Print result
         console.log(result);
     });
+
+    load_mailbox('sent');
+
 }
