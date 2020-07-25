@@ -14,6 +14,7 @@
                         const rate = data.rates[currency];
                         if (rate !== undefined) {
                             document.querySelector("#result").innerHTML = `1 USD is equal to ${rate.toFixed(3)} ${currency}`;
+                            console.log("dadasdasf")
                         } else {
                             document.querySelector("#result").innerHTML = `Invalid currency`;
                         }
