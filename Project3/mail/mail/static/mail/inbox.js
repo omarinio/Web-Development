@@ -42,10 +42,11 @@ function compose_email() {
         // Print result
         console.log(result);
         load_mailbox('sent');
-        // var alert_div = docuement.createElement('div');
-        // alert_div.setAttribute("class", "alert alert-warning alert-dismissible fade show");
-        // $('.alert').alert();
-        // document.querySelector('#emails-view').appendChild(alert_div);
+        var alert_div = document.createElement('div');
+        alert_div.setAttribute("class", "alert alert-success alert-dismissible");
+        alert_div.setAttribute("role", "alert");
+        alert_div.innerHTML = "Email successfully sent";
+        document.querySelector('#emails-view').appendChild(alert_div);
         return false;
     });
 
@@ -77,7 +78,7 @@ function load_mailbox(mailbox) {
 
         email_id = emails[email].id;
         mailbox_id = mailbox;
-        
+
         email_div.setAttribute("onclick", `load_email(${email_id}, mailbox_id)`);
 
         var sender_p = document.createElement('div');
@@ -129,6 +130,7 @@ function load_email(email_id, mailbox) {
       var body_div = document.createElement('div');
 
       if (mailbox !== 'sent') {
+        // create archive button
         var archivebtn = document.createElement('button');
         archivebtn.setAttribute("class", 'btn btn-warning');
         if (email.archived === true) {
@@ -145,6 +147,7 @@ function load_email(email_id, mailbox) {
       to_div.innerHTML = `<strong> To: </strong> ${email.recipients}`;
       subject_div.innerHTML = `<strong> Subject: </strong> ${email.subject}`;
       timestamp_div.innerHTML = `<strong> Date </strong> ${email.timestamp}`;
+
       body_div.innerHTML = email.body;
 
       body_div.style.paddingTop = '50px';
@@ -153,6 +156,18 @@ function load_email(email_id, mailbox) {
       email_div.appendChild(to_div);
       email_div.appendChild(subject_div);
       email_div.appendChild(timestamp_div);
+
+      if (mailbox !== 'sent') {
+        // create reply button
+        var replybtn = document.createElement('button');
+        replybtn.setAttribute("class", 'btn btn-outline-primary');
+        replybtn.addEventListener('click', () => {
+          reply_email(email.sender,email.subject,email.body,email.timestamp);
+       });
+        replybtn.innerHTML = "Reply";
+        email_div.appendChild(replybtn);
+      }
+
       email_div.appendChild(body_div);
       
 
@@ -194,5 +209,50 @@ function archive_button(email_id, archive_status) {
       console.log(email);
       load_mailbox('inbox');
     });
+  }
+}
+
+function reply_email(old_sender, old_subject, old_body, old_timestamp) {
+  // Show compose view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
+
+  if (!old_subject.startsWith("Re: ")) {
+    old_subject = `Re: ${old_subject}`;
+  }
+
+  document.querySelector('#compose-recipients').value = `${old_sender}`;
+  document.querySelector('#compose-subject').value = `${old_subject}`;
+  document.querySelector('#compose-body').value = `On ${old_timestamp}, ${old_sender} wrote: 
+      ${old_body}`;
+
+  document.querySelector('form').onsubmit = () => {
+    event.preventDefault();
+    const recipients = document.querySelector('#compose-recipients').value;
+    const subject = document.querySelector('#compose-subject').value;
+    const body = document.querySelector('#compose-body').value;
+  
+    fetch('/emails', {
+      method: 'POST',
+      body: JSON.stringify({
+          recipients: recipients,
+          subject: subject,
+          body: body
+      })
+    })
+    .then(response => response.json())
+    .then(result => {
+        // Print result
+        console.log(result);
+        load_mailbox('sent');
+        var alert_div = document.createElement('div');
+        alert_div.setAttribute("class", "alert alert-success alert-dismissible");
+        alert_div.setAttribute("role", "alert");
+        alert_div.innerHTML = "Email successfully sent";
+        document.querySelector('#emails-view').appendChild(alert_div);
+        return false;
+    });
+
   }
 }
