@@ -42,6 +42,10 @@ function compose_email() {
         // Print result
         console.log(result);
         load_mailbox('sent');
+        // var alert_div = docuement.createElement('div');
+        // alert_div.setAttribute("class", "alert alert-warning alert-dismissible fade show");
+        // $('.alert').alert();
+        // document.querySelector('#emails-view').appendChild(alert_div);
         return false;
     });
 
@@ -64,15 +68,17 @@ function load_mailbox(mailbox) {
   .then(emails => {
       // Print emails
       console.log(emails);
+      console.log(mailbox);
 
       for (email in emails) {
         var email_div = document.createElement('div');
         email_div.style.border = 'solid black 2px';
         email_div.style.height = '50px';
 
-        email_id = emails[email].id
-
-        email_div.setAttribute("onclick", 'load_email(email_id)');
+        email_id = emails[email].id;
+        mailbox_id = mailbox;
+        
+        email_div.setAttribute("onclick", `load_email(${email_id}, mailbox_id)`);
 
         var sender_p = document.createElement('div');
         var subject_p = document.createElement('div');
@@ -101,7 +107,7 @@ function load_mailbox(mailbox) {
   });
 }
 
-function load_email(email_id) {
+function load_email(email_id, mailbox) {
 
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
@@ -113,6 +119,7 @@ function load_email(email_id) {
   .then(email => {
       // Print email
       console.log(email);
+      console.log(mailbox);
 
       var email_div = document.createElement('div');
       var from_div = document.createElement('div');
@@ -121,22 +128,18 @@ function load_email(email_id) {
       var timestamp_div = document.createElement('div');
       var body_div = document.createElement('div');
 
-      var archivebtn = document.createElement('button');
-      archivebtn.setAttribute("class", 'btn btn-warning');
-
-      if (email_id%2 === 0) {
+      if (mailbox !== 'sent') {
+        var archivebtn = document.createElement('button');
+        archivebtn.setAttribute("class", 'btn btn-warning');
         if (email.archived === true) {
           archivebtn.innerHTML = 'Unarchive';
         } else {
           archivebtn.innerHTML = 'Archive';
         }
+        archivebtn.setAttribute("onclick", `archive_button(${email_id}, ${email.archived})`);
+        archivebtn.style.float = 'right';
+        email_div.appendChild(archivebtn);
       }
-
-      archivebtn.setAttribute("onclick", `archive_button(${email_id}, ${email.archived})`);
-
-      archivebtn.style.float = 'right';
-
-      email_div.appendChild(archivebtn);
 
       from_div.innerHTML = `<strong> From: </strong> ${email.sender}`;
       to_div.innerHTML = `<strong> To: </strong> ${email.recipients}`;
@@ -179,7 +182,7 @@ function archive_button(email_id, archive_status) {
       console.log(email);
       load_mailbox('archive');
     });
-    
+
   } else {
     fetch(`/emails/${email_id}`, {
       method: 'PUT',
