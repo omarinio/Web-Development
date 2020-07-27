@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>React</title>
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <style>
+            #app {
+                text-align: center;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            #problem {
+                font-size: 72px;
+            }
+
+            #winner {
+                font-size: 72px;
+                color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div id='app'></div>
+        <script type='text/babel'>
+
+            class App extends React.Component {
+                
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        num1: 1,
+                        num2: 1,
+                        response: "",
+                        score: 0 
+                    };
+                }
+
+                render() {
+                    if (this.state.score === 10) {
+                        return(
+                            <div id="winner">
+                                You won!
+                            </div>
+                        );
+                    }
+
+                    return (
+                        <div>
+                            <div id="problem">{this.state.num1} + {this.state.num2}</div>
+                            <input onKeyPress={this.inputKeyPress} onChange={this.updateResponse} value={this.state.response}/>
+                            <div>Score: {this.state.score}</div>
+                        </div>
+                    );
+                }
+
+                inputKeyPress = (event) => {
+                    if (event.key === 'Enter') {
+                        const answer = parseInt(this.state.response)
+                        if (answer === this.state.num1 + this.state.num2) {
+                            // correct answer
+                            this.setState(state=> ({
+                                score: state.score + 1,
+                                response: "",
+                                num1: Math.ceil(Math.random() * 10),
+                                num2: Math.ceil(Math.random() * 10)
+                            }));
+                        } else {
+                            // incorrent answer
+                            this.setState(state=> ({
+                                score: state.score - 1,
+                                response: ""
+                            }));
+                        }
+                    }
+                }
+
+                updateResponse = (event) => {
+                    this.setState({
+                        response: event.target.value
+                    })
+                }
+
+            }
+
+            ReactDOM.render(<App />, document.querySelector('#app'));
+
+        </script>
+    </body>
+</html>
