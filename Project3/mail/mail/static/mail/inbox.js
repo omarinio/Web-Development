@@ -39,15 +39,27 @@ function compose_email() {
     })
     .then(response => response.json())
     .then(result => {
-        // Print result
-        console.log(result);
-        load_mailbox('sent');
-        var alert_div = document.createElement('div');
-        alert_div.setAttribute("class", "alert alert-success alert-dismissible");
-        alert_div.setAttribute("role", "alert");
-        alert_div.innerHTML = "Email successfully sent";
-        document.querySelector('#emails-view').appendChild(alert_div);
-        return false;
+        if ('error' in result) {
+          console.log(result);
+          var alert_div = document.createElement('div');
+          alert_div.setAttribute("class", "alert alert-danger alert-dismissible");
+          alert_div.setAttribute("role", "alert");
+          alert_div.innerHTML = `${result['error']}`;
+          document.querySelector('#compose-view').insertBefore(alert_div, document.querySelector('#compose-view').firstChild);
+          return false;
+
+        } else {
+          // Print result
+          console.log(result);
+          load_mailbox('sent');
+          var alert_div = document.createElement('div');
+          alert_div.setAttribute("class", "alert alert-success alert-dismissible");
+          alert_div.setAttribute("role", "alert");
+          alert_div.innerHTML = "Email successfully sent";
+          document.querySelector('#emails-view').appendChild(alert_div);
+          return false;
+        }
+        
     });
 
   }
