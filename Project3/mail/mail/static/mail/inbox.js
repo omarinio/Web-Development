@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
-  
-  // document.querySelector('form').addEventListener('submit', () => send_email(event));
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -46,7 +44,7 @@ function compose_email() {
         load_mailbox('sent');
         return false;
     });
-    
+
   }
     
 }
@@ -72,6 +70,10 @@ function load_mailbox(mailbox) {
         email_div.style.border = 'solid black 2px';
         email_div.style.height = '50px';
 
+        email_id = emails[email].id
+
+        email_div.setAttribute("onclick", 'load_email(email_id)');
+
         var sender_p = document.createElement('div');
         var subject_p = document.createElement('div');
         var timestamp_p = document.createElement('div');
@@ -96,5 +98,41 @@ function load_mailbox(mailbox) {
         document.querySelector("#emails-view").appendChild(email_div);
         
       }
+  });
+}
+
+function load_email(email_id) {
+
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'block';
+
+  fetch(`/emails/${email_id}`)
+  .then(response => response.json())
+  .then(email => {
+      // Print email
+      console.log(email);
+
+      var email_div = document.createElement('div');
+      var from_div = document.createElement('div');
+      var to_div = document.createElement('div');
+      var subject_div = document.createElement('div');
+      var timestamp_div = document.createElement('div');
+      var body_div = document.createElement('div');
+
+      from_div.innerHTML = email.sender;
+      to_div.innerHTML = email.recipients;
+      subject_div.innerHTML = email.subject;
+      timestamp_div.innerHTML = email.timestamp;
+      body_div.innerHTML = email.body;
+
+      email_div.appendChild(from_div);
+      email_div.appendChild(to_div);
+      email_div.appendChild(subject_div);
+      email_div.appendChild(timestamp_div);
+      email_div.appendChild(body_div);
+
+      document.querySelector("#email-view").appendChild(email_div);
+        
   });
 }
