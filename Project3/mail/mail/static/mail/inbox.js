@@ -121,17 +121,37 @@ function load_email(email_id) {
       var timestamp_div = document.createElement('div');
       var body_div = document.createElement('div');
 
-      from_div.innerHTML = email.sender;
-      to_div.innerHTML = email.recipients;
-      subject_div.innerHTML = email.subject;
-      timestamp_div.innerHTML = email.timestamp;
+      var archivebtn = document.createElement('button');
+      archivebtn.setAttribute("class", 'btn btn-warning');
+
+      if (email_id%2 === 0) {
+        if (email.archived === true) {
+          archivebtn.innerHTML = 'Unarchive';
+        } else {
+          archivebtn.innerHTML = 'Archive';
+        }
+      }
+
+      archivebtn.setAttribute("onclick", `archive_button(${email_id}, ${email.archived})`);
+
+      archivebtn.style.float = 'right';
+
+      email_div.appendChild(archivebtn);
+
+      from_div.innerHTML = `<strong> From: </strong> ${email.sender}`;
+      to_div.innerHTML = `<strong> To: </strong> ${email.recipients}`;
+      subject_div.innerHTML = `<strong> Subject: </strong> ${email.subject}`;
+      timestamp_div.innerHTML = `<strong> Date </strong> ${email.timestamp}`;
       body_div.innerHTML = email.body;
+
+      body_div.style.paddingTop = '50px';
 
       email_div.appendChild(from_div);
       email_div.appendChild(to_div);
       email_div.appendChild(subject_div);
       email_div.appendChild(timestamp_div);
       email_div.appendChild(body_div);
+      
 
       document.querySelector("#email-view").appendChild(email_div);
         
@@ -143,4 +163,33 @@ function load_email(email_id) {
         read: true
     })
   })
+}
+
+function archive_button(email_id, archive_status) {
+  console.log(archive_status);
+
+  if (archive_status === true) {
+    fetch(`/emails/${email_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+          archived: false
+      })
+    })
+    .then(email => {
+      console.log(email);
+      load_mailbox('archive');
+    });
+    
+  } else {
+    fetch(`/emails/${email_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+          archived: true
+      })
+    })
+    .then(email => {
+      console.log(email);
+      load_mailbox('inbox');
+    });
+  }
 }
