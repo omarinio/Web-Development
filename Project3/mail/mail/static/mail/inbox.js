@@ -19,6 +19,10 @@ function compose_email() {
   document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#email-view').style.display = 'none';
 
+  document.querySelectorAll('.alert').forEach(function(a){
+    a.remove();
+  })
+
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
@@ -230,6 +234,10 @@ function reply_email(old_sender, old_subject, old_body, old_timestamp) {
   document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#email-view').style.display = 'none';
 
+  document.querySelectorAll('.alert').forEach(function(a){
+    a.remove();
+  })
+
   if (!old_subject.startsWith("Re: ")) {
     old_subject = `Re: ${old_subject}`;
   }
@@ -255,6 +263,16 @@ function reply_email(old_sender, old_subject, old_body, old_timestamp) {
     })
     .then(response => response.json())
     .then(result => {
+      if ('error' in result) {
+        console.log(result);
+        var alert_div = document.createElement('div');
+        alert_div.setAttribute("class", "alert alert-danger alert-dismissible");
+        alert_div.setAttribute("role", "alert");
+        alert_div.innerHTML = `${result['error']}`;
+        document.querySelector('#compose-view').insertBefore(alert_div, document.querySelector('#compose-view').firstChild);
+        return false;
+
+      } else {
         // Print result
         console.log(result);
         load_mailbox('sent');
@@ -264,6 +282,7 @@ function reply_email(old_sender, old_subject, old_body, old_timestamp) {
         alert_div.innerHTML = "Email successfully sent";
         document.querySelector('#emails-view').appendChild(alert_div);
         return false;
+      }
     });
 
   }
