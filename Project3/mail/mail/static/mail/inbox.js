@@ -106,6 +106,7 @@ function load_email(email_id) {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'block';
+  document.querySelector('#email-view').innerHTML = '';
 
   fetch(`/emails/${email_id}`)
   .then(response => response.json())
@@ -135,4 +136,11 @@ function load_email(email_id) {
       document.querySelector("#email-view").appendChild(email_div);
         
   });
+
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
+  })
 }
