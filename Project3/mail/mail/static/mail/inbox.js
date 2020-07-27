@@ -45,22 +45,28 @@ function load_mailbox(mailbox) {
 
       for (email in emails) {
         var email_div = document.createElement('div');
-        email_div.style.border = 'solid black';
+        email_div.style.border = 'solid black 2px';
+        email_div.style.height = '50px';
 
-        var sender_p = document.createElement('p');
-        var subject_p = document.createElement('p');
-        var timestamp_p = document.createElement('p');
+        var sender_p = document.createElement('div');
+        var subject_p = document.createElement('div');
+        var timestamp_p = document.createElement('div');
 
         sender_p.innerHTML = emails[email].sender;
         subject_p.innerHTML = emails[email].subject;
         timestamp_p.innerHTML = emails[email].timestamp;
 
+        sender_p.setAttribute("style", "font-weight: bold; float: left; position: relative; top: 50%; transform: translateY(-50%); padding-left: 4px");
+        subject_p.setAttribute("style", "float: left; padding-left: 10px; position: relative; top: 50%; transform: translateY(-50%)");
+        timestamp_p.setAttribute("style", "float: right; padding-right: 4px; position: relative; top: 50%; transform: translateY(-50%); color: grey");
+
         email_div.appendChild(sender_p);
         email_div.appendChild(subject_p);
         email_div.appendChild(timestamp_p);
+      
 
-        if (emails[email].read == true) {
-          email_div.style.backgroundColor = 'grey';
+        if (emails[email].read == true && mailbox == 'inbox') {
+          email_div.style.backgroundColor = 'lightgrey';
         }
 
         document.querySelector("#emails-view").appendChild(email_div);
