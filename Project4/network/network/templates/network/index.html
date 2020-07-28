@@ -3,6 +3,7 @@
 
 {% block body %}
     <h1 class="h1-headings">All Posts</h1>
+    {% if user.is_authenticated %}
     <div id="newpost" class="border rounded">
         <h3><strong>New Post</strong></h3>
         <form action="{% url 'new_post' %}" method="post">
@@ -12,7 +13,8 @@
             <button type="submit" class="btn btn-primary">Post</button>
         </form>
     </div>
-    <div id="posts-view">
+    {% endif %}
+    <div class="posts-view">
         {% for post in posts %}
             <div class="post">
                 {{ post.user }}

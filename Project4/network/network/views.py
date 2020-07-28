@@ -8,22 +8,19 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django import forms
 
-from .models import User, Post
+from .models import User, Post, Follow
 
 
 class PostForm(forms.Form):
-    content = forms.CharField(label='',widget=forms.Textarea(attrs={'class' :'form-control'}))
+    content = forms.CharField(label='', widget=forms.Textarea(attrs={'class' :'form-control'}))
 
 
 def index(request):
-    if request.user.is_authenticated:
-        posts = Post.objects.all()
-        return render(request, "network/index.html", {
-            "posts": posts,
-            "form": PostForm()
-        })
-    else:
-        return HttpResponseRedirect("login")
+    posts = Post.objects.all()
+    return render(request, "network/index.html", {
+        "posts": posts,
+        "form": PostForm()
+    })
 
 
 def login_view(request):
@@ -77,7 +74,7 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-@csrf_exempt
+
 @login_required
 def new_post(request):
     if request.method == "POST":
@@ -85,3 +82,30 @@ def new_post(request):
         Post.objects.create(user=request.user, body = body)
 
         return HttpResponseRedirect(reverse('index')) 
+
+
+def user(request, id):
+    user_profile = User.objects.get(id=id)
+
+    followers = Follow.objects.filter(user = user_profile).count
+    following = Follow.objects.filter(follower = user_profile).count
+
+    user_posts = Post.objects.filter(user = user_profile)
+
+    if request.user.is_authenticated and request.user != user_profile:
+        return render(request, "network/user.html", {
+            "user": user_profile,
+            "followers": followers,
+            "following": following,
+            "posts": user_posts,
+            "can_follow": True
+        })
+    else:
+        return render(request, "network/user.html", {
+            "user": user_profile,
+            "followers": followers,
+            "following": following,
+            "posts": user_posts,
+            "can_follow": False
+        })
+
