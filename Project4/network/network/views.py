@@ -3,12 +3,27 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django import forms
 
-from .models import User
+from .models import User, Post
+
+
+class PostForm(forms.Form):
+    content = forms.CharField(label='',widget=forms.Textarea(attrs={'class' :'form-control'}))
 
 
 def index(request):
-    return render(request, "network/index.html")
+    if request.user.is_authenticated:
+        posts = Post.objects.all()
+        return render(request, "network/index.html", {
+            "posts": posts,
+            "form": PostForm()
+        })
+    else:
+        return HttpResponseRedirect("login")
 
 
 def login_view(request):
@@ -61,3 +76,12 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+@csrf_exempt
+@login_required
+def new_post(request):
+    if request.method == "POST":
+        body = request.POST['content']
+        Post.objects.create(user=request.user, body = body)
+
+        return HttpResponseRedirect(reverse('index')) 

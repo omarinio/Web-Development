@@ -1,5 +1,29 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-    TODO
+    <h1 class="h1-headings">All Posts</h1>
+    <div id="newpost" class="border rounded">
+        <h3><strong>New Post</strong></h3>
+        <form action="{% url 'new_post' %}" method="post">
+            {% csrf_token %}
+            <!-- <textarea class="form-control" id="compose-post" name="post_content"></textarea> -->
+            {{ form }}
+            <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+    </div>
+    <div id="posts-view">
+        {% for post in posts %}
+            <div class="post">
+                {{ post.user }}
+                {{ post.body }}
+                {{ post.timestamp }}
+                {{ post.likes }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/scripts.js' %}"></script>
 {% endblock %}
