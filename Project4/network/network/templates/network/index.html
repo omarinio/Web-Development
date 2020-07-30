@@ -17,11 +17,12 @@
     <div class="posts-view">
         {% for post in posts %}
             <div class="post">
-                {{ post.user }}
-                {{ post.body }}
-                {{ post.timestamp }}
-                {{ post.likes }}
+                <a href="{% url 'user' post.user.id %}"><p>{{ post.user }}</p></a>
+                <p>{{ post.body }}</p>
+                <p>{{ post.timestamp }}</p>
+                <p>{{ post.likes }}</p>
             </div>
+            <hr>
         {% endfor %}
     </div>
 {% endblock %}
