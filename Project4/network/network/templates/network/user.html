@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block body %}
-    <h1 class="h1-headings">User: {{ user.username }}</h1>
-    {% if user != request.user %}
+    <h1 class="h1-headings">User: {{ user_profile.username }}</h1>
+    {% if user_profile != request.user %}
         <div id="follow-button-div">
-            <button type="button" class="btn btn-dark" id="follow-button" data-user="{{ user.username }}">
-                {% if request.user in user.following.all %}
+            <button type="button" class="btn btn-dark" id="follow-button" data-user="{{ user_profile.username }}">
+                {% if is_following %}
                     Unfollow
                 {% else %}
                     Follow
@@ -15,9 +15,8 @@
         </div>
     {% endif %}
     <hr>
-    <button type="button">falo</button>
     <div id="follower-view">
-        <p>Followers: {{ followers }}</p>
+        <p id="follower-p">Followers: {{ followers }}</p>
         <p>Following: {{ following }}</p>
     </div>
     <hr>

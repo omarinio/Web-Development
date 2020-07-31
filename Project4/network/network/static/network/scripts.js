@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         fetch("/follow", {
             method: "POST",
+            // headers: { "X-CSRFToken": getCookie('csrftoken') },
             body: JSON.stringify({
                 user: user,
                 action: action
@@ -14,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(result => {
               console.log(result);
+
+              document.querySelector("#follow-button").textContent = `${result.action}`;
+              document.querySelector("#follower-p").textContent = `Followers: ${result.followers}`
             });
     });
 

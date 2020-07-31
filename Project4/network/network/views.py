@@ -94,25 +94,30 @@ def user(request, id):
     user_posts = Post.objects.filter(user = user_profile)
 
     if request.user.is_authenticated and request.user != user_profile:
+        is_following = False
+
+        if Follow.objects.filter(user = user_profile, follower = request.user).count() > 0:
+            is_following = True
+
         return render(request, "network/user.html", {
-            "user": user_profile,
+            "user_profile": user_profile,
             "followers": followers,
             "following": following,
             "posts": user_posts,
-            "can_follow": True
+            "can_follow": True,
+            "is_following": is_following
         })
     else:
         return render(request, "network/user.html", {
-            "user": user_profile,
+            "user_profile": user_profile,
             "followers": followers,
             "following": following,
             "posts": user_posts,
             "can_follow": False
         })
 
-
-@login_required
 @csrf_exempt
+@login_required
 def follow(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -120,4 +125,22 @@ def follow(request):
         user = data.get("user", "")
         action = data.get("action", "")
 
-        return JsonResponse({'status': 201, 'action': action, 'user': user}, status=201)
+        if action == "Follow":
+            # try:
+                Follow.objects.create(user = User.objects.get(username = user), follower = request.user)
+                
+                return JsonResponse({'status': 201, 'action': "Unfollow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
+            # except:
+            #     return JsonResponse({}, status=404)
+        else:
+            # try:
+                follow_to_delete = Follow.objects.get(user = User.objects.get(username = user), follower = request.user)
+                follow_to_delete.delete()
+                return JsonResponse({'status': 201, 'action': "Follow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
+            # except:
+            #     return JsonResponse({}, status=404)
+
+        # return JsonResponse({'status': 201, 'action': "Unfollow", 'followers': Follow.objects.filter(user = user).count}, status=201)
+    return JsonResponse({}, status=400)
+
+
