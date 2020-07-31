@@ -17,7 +17,7 @@ class PostForm(forms.Form):
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-timestamp')
     return render(request, "network/index.html", {
         "posts": posts,
         "form": PostForm()
@@ -91,7 +91,7 @@ def user(request, id):
     followers = Follow.objects.filter(user = user_profile).count
     following = Follow.objects.filter(follower = user_profile).count
 
-    user_posts = Post.objects.filter(user = user_profile)
+    user_posts = Post.objects.filter(user = user_profile).order_by('-timestamp')
 
     if request.user.is_authenticated and request.user != user_profile:
         is_following = False
@@ -116,7 +116,7 @@ def user(request, id):
             "can_follow": False
         })
 
-@csrf_exempt
+
 @login_required
 def follow(request):
     if request.method == "POST":
@@ -126,21 +126,31 @@ def follow(request):
         action = data.get("action", "")
 
         if action == "Follow":
-            # try:
+            try:
                 Follow.objects.create(user = User.objects.get(username = user), follower = request.user)
                 
                 return JsonResponse({'status': 201, 'action': "Unfollow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
-            # except:
-            #     return JsonResponse({}, status=404)
+            except:
+                return JsonResponse({}, status=404)
         else:
-            # try:
+            try:
                 follow_to_delete = Follow.objects.get(user = User.objects.get(username = user), follower = request.user)
                 follow_to_delete.delete()
                 return JsonResponse({'status': 201, 'action': "Follow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
-            # except:
-            #     return JsonResponse({}, status=404)
+            except:
+                return JsonResponse({}, status=404)
 
-        # return JsonResponse({'status': 201, 'action': "Unfollow", 'followers': Follow.objects.filter(user = user).count}, status=201)
     return JsonResponse({}, status=400)
 
-
+@login_required
+def following(request):
+    following_users = Follow.objects.filter(follower = request.user)
+    posts = []
+    for user in following_users:
+        user_posts = Post.objects.filter(user = user.user)
+        for post in user_posts:
+            posts.append(post)
+    
+    return render(request, "network/following.html", {
+            "posts": posts[::-1]
+        })

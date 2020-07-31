@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         fetch("/follow", {
             method: "POST",
-            // headers: { "X-CSRFToken": getCookie('csrftoken') },
+            headers: { "X-CSRFToken": getCookie('csrftoken') },
             body: JSON.stringify({
                 user: user,
                 action: action
