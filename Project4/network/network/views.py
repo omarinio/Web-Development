@@ -150,7 +150,9 @@ def following(request):
         user_posts = Post.objects.filter(user = user.user)
         for post in user_posts:
             posts.append(post)
-    
+
+    posts.sort(key = lambda x: x.timestamp)
+
     return render(request, "network/following.html", {
             "posts": posts[::-1]
         })
