@@ -156,3 +156,4 @@ def following(request):
     return render(request, "network/following.html", {
             "posts": posts[::-1]
         })
+        

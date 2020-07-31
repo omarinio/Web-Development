@@ -3,7 +3,7 @@
 
 {% block body %}
     <h1 class="h1-headings">User: {{ user_profile.username }}</h1>
-    {% if user_profile != request.user %}
+    {% if user_profile != request.user and request.user.is_authenticated %}
         <div id="follow-button-div">
             <button type="button" class="btn btn-dark" id="follow-button" data-user="{{ user_profile.username }}">
                 {% if is_following %}
