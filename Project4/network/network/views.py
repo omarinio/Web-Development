@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -109,3 +110,14 @@ def user(request, id):
             "can_follow": False
         })
 
+
+@login_required
+@csrf_exempt
+def follow(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        user = data.get("user", "")
+        action = data.get("action", "")
+
+        return JsonResponse({'status': 201, 'action': action, 'user': user}, status=201)

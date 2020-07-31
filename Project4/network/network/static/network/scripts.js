@@ -1,5 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    document.querySelector("#follow-button").addEventListener("click", (event) => {
+        user = document.querySelector("#follow-button").getAttribute("data-user");
+        action = document.querySelector("#follow-button").textContent.trim();
+        form = new FormData();
+        form.append("user", user);
+        form.append("action", action);
+
+        fetch("/follow", {
+            method: "POST",
+            body: JSON.stringify({
+                user: user,
+                action: action
+            })
+          })
+            .then(response => response.json())
+            .then(result => {
+              console.log(result);
+            });
+    });
+
     // document.querySelector("#newpost").onsubmit = (event) => {
     //     event.preventDefault()
     //     var body = document.querySelector("#compose-post").value;
