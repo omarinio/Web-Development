@@ -3,9 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector("#follow-button").addEventListener("click", (event) => {
         user = document.querySelector("#follow-button").getAttribute("data-user");
         action = document.querySelector("#follow-button").textContent.trim();
-        form = new FormData();
-        form.append("user", user);
-        form.append("action", action);
 
         fetch("/follow", {
             method: "POST",
