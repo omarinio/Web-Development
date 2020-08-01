@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django import forms
+from django.core.paginator import Paginator
 
 from .models import User, Post, Follow
 
@@ -18,8 +19,13 @@ class PostForm(forms.Form):
 
 def index(request):
     posts = Post.objects.all().order_by('-timestamp')
+    paginated_posts = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_posts = paginated_posts.get_page(page_number)
+
     return render(request, "network/index.html", {
-        "posts": posts,
+        "posts": page_posts,
         "form": PostForm()
     })
 
