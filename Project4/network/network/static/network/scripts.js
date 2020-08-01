@@ -15,9 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(result => {
               console.log(result);
-
-              document.querySelector("#follow-button").textContent = `${result.action}`;
-              document.querySelector("#follower-p").textContent = `Followers: ${result.followers}`
+              if (result.status == 201) {
+                document.querySelector("#follow-button").textContent = `${result.action}`;
+                document.querySelector("#follower-p").textContent = `Followers: ${result.followers}`;
+              } else {
+                  alert(`${result.message}`);
+              }
+            
             });
     });
 

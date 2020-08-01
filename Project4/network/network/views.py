@@ -127,16 +127,23 @@ def follow(request):
 
         if action == "Follow":
             try:
-                Follow.objects.create(user = User.objects.get(username = user), follower = request.user)
-                
-                return JsonResponse({'status': 201, 'action': "Unfollow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
+                if Follow.objects.filter(user = User.objects.get(username = user), follower = request.user).count() == 0:
+                    Follow.objects.create(user = User.objects.get(username = user), follower = request.user)
+                    
+                    return JsonResponse({'status': 201, 'action': "Unfollow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
+                else:
+                    return JsonResponse({'message': "You are already following this user!"}, status=400)
             except:
                 return JsonResponse({}, status=404)
         else:
             try:
-                follow_to_delete = Follow.objects.get(user = User.objects.get(username = user), follower = request.user)
-                follow_to_delete.delete()
-                return JsonResponse({'status': 201, 'action': "Follow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
+                if Follow.objects.filter(user = User.objects.get(username = user), follower = request.user).count() > 0:
+                    follow_to_delete = Follow.objects.get(user = User.objects.get(username = user), follower = request.user)
+                    follow_to_delete.delete()
+
+                    return JsonResponse({'status': 201, 'action': "Follow", 'followers': Follow.objects.filter(user = User.objects.get(username = user)).count()}, status=201)
+                else: 
+                    return JsonResponse({'message': "You cannot unfollow a user you are not following!"}, status=400)
             except:
                 return JsonResponse({}, status=404)
 
@@ -156,4 +163,3 @@ def following(request):
     return render(request, "network/following.html", {
             "posts": posts[::-1]
         })
-        
