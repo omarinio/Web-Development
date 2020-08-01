@@ -99,6 +99,11 @@ def user(request, id):
 
     user_posts = Post.objects.filter(user = user_profile).order_by('-timestamp')
 
+    paginated_posts = Paginator(user_posts, 10)
+
+    page_number = request.GET.get('page')
+    page_posts = paginated_posts.get_page(page_number)
+
     if request.user.is_authenticated and request.user != user_profile:
         is_following = False
 
@@ -109,7 +114,7 @@ def user(request, id):
             "user_profile": user_profile,
             "followers": followers,
             "following": following,
-            "posts": user_posts,
+            "posts": page_posts,
             "can_follow": True,
             "is_following": is_following
         })
@@ -118,7 +123,7 @@ def user(request, id):
             "user_profile": user_profile,
             "followers": followers,
             "following": following,
-            "posts": user_posts,
+            "posts": page_posts,
             "can_follow": False
         })
 
@@ -166,6 +171,13 @@ def following(request):
 
     posts.sort(key = lambda x: x.timestamp)
 
+    posts = posts[::-1]
+
+    paginated_posts = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_posts = paginated_posts.get_page(page_number)
+
     return render(request, "network/following.html", {
-            "posts": posts[::-1]
+            "posts": page_posts
         })
