@@ -160,6 +160,7 @@ def follow(request):
 
     return JsonResponse({}, status=400)
 
+
 @login_required
 def following(request):
     following_users = Follow.objects.filter(follower = request.user)
@@ -181,3 +182,8 @@ def following(request):
     return render(request, "network/following.html", {
             "posts": page_posts
         })
+
+
+@login_required
+def edit(request):
+    return JsonResponse({}, status=201)

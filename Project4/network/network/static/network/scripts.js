@@ -25,39 +25,20 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 
-    // document.querySelector("#newpost").onsubmit = (event) => {
-    //     event.preventDefault()
-    //     var body = document.querySelector("#compose-post").value;
+    document.querySelector(".edit").array.forEach(element => {
+        element.addEventListener("click", (event) => {
+            postId = element.getAttribute("data-post_id");
+            edit = document.querySelector(`#edit-${postId}`);
 
-    //     fetch('/new_post', {
-    //         method: 'POST',
-    //         // headers: { "X-CSRFToken": getCookie('csrftoken') },
-    //         body: JSON.stringify({
-    //             body: body
-    //         })
-    //     })
-    //     .then(result => {
-    //         if ('error' in result) {
-    //             console.log(result);
-    //             var alert_div = document.createElement('div');
-    //             alert_div.setAttribute("class", "alert alert-danger alert-dismissible");
-    //             alert_div.setAttribute("role", "alert");
-    //             alert_div.innerHTML = "Post cannot be empty";
-    //             document.querySelector('#newpost').insertBefore(alert_div, document.querySelector('#newpost').firstChild);
-    //             return false;
-    //         } else {
-    //             console.log(result);
-    //         }
-    //     });
+            action = edit.innerHTML;
 
-    //     // if (body === '') {
-    //     //     var alert_div = document.createElement('div');
-    //     //     alert_div.setAttribute("class", "alert alert-danger alert-dismissible");
-    //     //     alert_div.setAttribute("role", "alert");
-    //     //     alert_div.innerHTML = "Post cannot be empty";
-    //     //     document.querySelector('#newpost').insertBefore(alert_div, document.querySelector('#newpost').firstChild);
-    //     // }
-    // }
+            if (action == "Edit") {
+                edit.innerHTML = "Save"
+
+                document.querySelector(`#edit-${postId}`).style.display = "none";
+            }
+        });
+    });
 
 
 });
