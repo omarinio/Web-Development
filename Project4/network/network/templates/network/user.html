@@ -29,6 +29,7 @@
                 <a href="{% url 'user' post.user.id %}"><p>{{ post.user }}</p></a>
                 <p id="content-{{ post.id }}">{{ post.body }}</p>
                 <form id="edit-div-{{ post.id }}" style="display: none">
+                    {% csrf_token %}
                     <textarea class="form-control" id="text-{{ post.id }}">{{ post.body }}</textarea>
                 </form>
                 <p>{{ post.timestamp }}</p>

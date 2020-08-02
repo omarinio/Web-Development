@@ -4,32 +4,35 @@
 {% block body %}
     <h1 class="h1-headings">All Posts</h1>
     {% if user.is_authenticated %}
-    <div id="newpost" class="border rounded">
-        <h3><strong>New Post</strong></h3>
-        <form action="{% url 'new_post' %}" method="post">
-            {% csrf_token %}
-            <!-- <textarea class="form-control" id="compose-post" name="post_content"></textarea> -->
-            {{ form }}
-            <button type="submit" class="btn btn-primary">Post</button>
-        </form>
+    <div id="newpost" class="card">
+        <div class="card-body my-card">
+            <h3><strong>New Post</strong></h3>
+            <form action="{% url 'new_post' %}" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="btn btn-primary">Post</button>
+            </form>
+        </div>
     </div>
     {% endif %}
     <div class="posts-view">
         {% for post in posts %}
-            {% if post.user == request.user %}
-                <a href="" id="edit-{{ post.id }}" class="edit-link" data-post_id="{{ post.id }}">Edit</a>
-            {% endif %}
-            <div class="post" id="post-{{ post.id }}">
-                <a href="{% url 'user' post.user.id %}"><p>{{ post.user }}</p></a>
-                <p id="content-{{ post.id }}">{{ post.body }}</p>
-                <form id="edit-div-{{ post.id }}" style="display: none">
-                    <textarea class="form-control" id="text-{{ post.id }}">{{ post.body }}</textarea>
-                </form>
-                <p>{{ post.timestamp }}</p>
-                <p>{{ post.likes }}</p>
+            <div class="post card" id="post-{{ post.id }}">
+                <div class="card-body my-card">
+                    {% if post.user == request.user %}
+                        <a href="" id="edit-{{ post.id }}" class="edit-link" data-post_id="{{ post.id }}">Edit</a>
+                    {% endif %}
+                    <a href="{% url 'user' post.user.id %}"><p>{{ post.user }}</p></a>
+                    <p id="content-{{ post.id }}">{{ post.body }}</p>
+                    <form id="edit-div-{{ post.id }}" style="display: none">
+                        {% csrf_token %}
+                        <textarea class="form-control" id="text-{{ post.id }}">{{ post.body }}</textarea>
+                    </form>
+                    <p>{{ post.timestamp }}</p>
+                    <p>{{ post.likes }}</p>
+                </div>
             </div>
                 
-            <hr>
         {% endfor %}
     </div>
 
