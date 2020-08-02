@@ -1,41 +1,38 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    document.querySelector("#follow-button").addEventListener("click", (event) => {
-        user = document.querySelector("#follow-button").getAttribute("data-user");
-        action = document.querySelector("#follow-button").textContent.trim();
-
-        fetch("/follow", {
-            method: "POST",
-            headers: { "X-CSRFToken": getCookie('csrftoken') },
-            body: JSON.stringify({
-                user: user,
-                action: action
-            })
-          })
-            .then(response => response.json())
-            .then(result => {
-              console.log(result);
-              if (result.status == 201) {
-                document.querySelector("#follow-button").textContent = `${result.action}`;
-                document.querySelector("#follower-p").textContent = `Followers: ${result.followers}`;
-              } else {
-                  alert(`${result.message}`);
-              }
-            
-            });
-    });
-
-    document.querySelector(".edit").array.forEach(element => {
+    //edit post event
+    document.querySelectorAll(".edit-link").forEach((element) => {
         element.addEventListener("click", (event) => {
+            event.preventDefault();
             postId = element.getAttribute("data-post_id");
             edit = document.querySelector(`#edit-${postId}`);
 
             action = edit.innerHTML;
 
+            //if edit
             if (action == "Edit") {
-                edit.innerHTML = "Save"
-
-                document.querySelector(`#edit-${postId}`).style.display = "none";
+                edit.innerHTML = "Save";
+                document.querySelector(`#edit-div-${postId}`).style.display = "block";
+                document.querySelector(`#content-${postId}`).style.display = "none";
+            //if save
+            } else {
+                fetch("/edit", {
+                    method: "PUT",
+                    headers: { "X-CSRFToken": getCookie('csrftoken') },
+                    body: JSON.stringify({
+                        post_id: postId,
+                        post: document.querySelector(`#text-${postId}`).value
+                    })
+                })
+                .then(response => {
+                    console.log(response.json());
+                    document.querySelector(`#edit-div-${postId}`).style.display = "none";
+                    document.querySelector(`#content-${postId}`).style.display = "block";
+                    edit.innerHTML = "Edit";
+                    document.querySelector(`#content-${postId}`).innerHTML = document.querySelector(`#text-${postId}`).value;
+                })
+                .catch(e => console.log(e));
+                
             }
         });
     });

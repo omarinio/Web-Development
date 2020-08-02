@@ -186,4 +186,20 @@ def following(request):
 
 @login_required
 def edit(request):
-    return JsonResponse({}, status=201)
+    if request.method != "PUT":
+        return JsonResponse({'message': "Must access through PUT request"}, status = 400)
+
+    data = json.loads(request.body)
+
+    try:
+        post_id = data.get("post_id", "")
+        post = data.get("post", "")
+        edited_post = Post.objects.get(id = post_id)
+        if request.user == edited_post.user:
+            edited_post.body = post
+            edited_post.save()
+            return JsonResponse({}, status = 201)
+        else:
+            return JsonResponse({'message': "Access denied"}, status = 403)
+    except:
+        return JsonResponse({'message': "Post not found"}, status = 404)
