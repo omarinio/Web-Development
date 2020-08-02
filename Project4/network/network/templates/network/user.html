@@ -22,12 +22,19 @@
     <hr>
     <div class="posts-view">
         {% for post in posts %}
-            <div class="post">
+            {% if post.user == request.user %}
+                <a href="" id="edit-{{ post.id }}" class="edit-link" data-post_id="{{ post.id }}">Edit</a>
+            {% endif %}
+            <div class="post" id="post-{{ post.id }}">
                 <a href="{% url 'user' post.user.id %}"><p>{{ post.user }}</p></a>
-                <p>{{ post.body }}</p>
+                <p id="content-{{ post.id }}">{{ post.body }}</p>
+                <form id="edit-div-{{ post.id }}" style="display: none">
+                    <textarea class="form-control" id="text-{{ post.id }}">{{ post.body }}</textarea>
+                </form>
                 <p>{{ post.timestamp }}</p>
                 <p>{{ post.likes }}</p>
             </div>
+                
             <hr>
         {% endfor %}
     </div>
