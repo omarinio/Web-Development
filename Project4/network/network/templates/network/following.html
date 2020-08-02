@@ -5,11 +5,13 @@
     <h1 class="h1-headings">Following</h1>
     <div class="posts-view">
         {% for post in posts %}
-            <div class="post">
-                <a href="{% url 'user' post.user.id %}"><p>{{ post.user }}</p></a>
-                <p>{{ post.body }}</p>
-                <p>{{ post.timestamp }}</p>
-                <p>{{ post.likes }}</p>
+            <div class="post card" id="post-{{ post.id }}">
+                <div class="card-body my-card">
+                    <a href="{% url 'user' post.user.id %}"><p>{{ post.user }}</p></a>
+                    <p>{{ post.body }}</p>
+                    <p>{{ post.timestamp }}</p>
+                    <p>{{ post.likes }}</p>
+                </div>
             </div>
             <hr>
         {% endfor %}
