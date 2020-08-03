@@ -36,7 +36,9 @@
                         <img src="{% static 'network/filled.png' %}" alt="Like button" class="like-button" data-post_id="{{ post.id }}" data-action="unlike" id="liked-{{ post.id }}" style="display: none">
                         <img src="{% static 'network/empty.png' %}" alt="Like button" class="like-button" data-post_id="{{ post.id }}" data-action="like" id="unliked-{{ post.id }}" style="display: block"> 
                     {% endif %}
-                    <p style="display: inline-block" id="like-count-{{ post.id }}">{{ post.likes.count }}</p>
+                    <div>
+                        <p style="display: inline-block" id="like-count-{{ post.id }}">{{ post.likes.count }}</p>
+                    </div>
                 </div>
             </div>
                 
@@ -71,6 +73,6 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'network/scripts.js' %}"></script>
+    <script src="{% static 'network/edit.js' %}"></script>
     <script src="{% static 'network/like.js' %}"></script>
 {% endblock %}

@@ -82,7 +82,7 @@ def register(request):
         return render(request, "network/register.html")
 
 
-@login_required
+@login_required(login_url='login')
 def new_post(request):
     if request.method == "POST":
         body = request.POST['content']
@@ -128,7 +128,7 @@ def user(request, id):
         })
 
 
-@login_required
+@login_required(login_url='login')
 def follow(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -161,7 +161,7 @@ def follow(request):
     return JsonResponse({}, status=400)
 
 
-@login_required
+@login_required(login_url='login')
 def following(request):
     following_users = Follow.objects.filter(follower = request.user)
     posts = []
@@ -184,7 +184,7 @@ def following(request):
         })
 
 
-@login_required
+@login_required(login_url='login')
 def edit(request):
     if request.method != "PUT":
         return JsonResponse({'message': "Must access through PUT request"}, status = 400)
@@ -205,7 +205,7 @@ def edit(request):
         return JsonResponse({'message': "Post not found"}, status = 404)
 
 
-@login_required
+@login_required(login_url='login')
 def like(request):
     if request.method != "PUT":
         return JsonResponse({"status": 400, 'message': "Must access through PUT request"}, status = 400)
@@ -229,7 +229,7 @@ def like(request):
                 post.save()
                 return JsonResponse({"status": 201}, status = 201)
         except:
-            return JsonResponse({"status": 400}, status=400)
+            return JsonResponse({"status": 400, 'message': "Something has gone wrong..."}, status=400)
     else:
         try:
             if request.user in post.likes.all():
@@ -239,4 +239,4 @@ def like(request):
             else:
                 return JsonResponse({"status": 400, 'message': "You cannot unlike a post you haven't liked!"}, status=400)
         except:
-            return JsonResponse({"status": 400}, status=400)
+            return JsonResponse({"status": 400, 'message': "Something has gone wrong..."}, status=400)

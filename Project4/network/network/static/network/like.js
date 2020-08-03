@@ -16,9 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     action: action
                 })
             })
+            .then(response => response.json())
             .then(response => {
-                console.log(response.json());
                 if (response.status == 201) {
+                    console.log(response);
                     var likes = parseInt(document.querySelector(`#like-count-${postId}`).innerHTML);
                     if (action === "like") {
                         document.querySelector(`#liked-${postId}`).style.display = "block";
