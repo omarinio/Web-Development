@@ -15,3 +15,8 @@ textarea {
 .h1-headings {
     padding-left: 20px;
 }
+
+.like-button {
+    height: 20px;
+    width: 20px;
+}

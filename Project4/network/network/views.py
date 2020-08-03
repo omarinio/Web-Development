@@ -203,3 +203,40 @@ def edit(request):
             return JsonResponse({'message': "Access denied"}, status = 403)
     except:
         return JsonResponse({'message': "Post not found"}, status = 404)
+
+
+@login_required
+def like(request):
+    if request.method != "PUT":
+        return JsonResponse({"status": 400, 'message': "Must access through PUT request"}, status = 400)
+
+    data = json.loads(request.body)
+
+    post_id = data.get("post_id", "")
+    action = data.get("action", "")
+    
+    try:       
+        post = Post.objects.get(id = post_id)
+    except:
+        return JsonResponse({"status": 404, 'message': "Post not found"}, status = 404)
+
+    if action == "like":
+        try:
+            if request.user in post.likes.all():
+                return JsonResponse({"status": 400, 'message': "You already liked this post!"}, status=400)
+            else:
+                post.likes.add(request.user)
+                post.save()
+                return JsonResponse({"status": 201}, status = 201)
+        except:
+            return JsonResponse({"status": 400}, status=400)
+    else:
+        try:
+            if request.user in post.likes.all():
+                post.likes.remove(request.user)
+                post.save()
+                return JsonResponse({"status": 201}, status = 201)
+            else:
+                return JsonResponse({"status": 400, 'message': "You cannot unlike a post you haven't liked!"}, status=400)
+        except:
+            return JsonResponse({"status": 400}, status=400)
